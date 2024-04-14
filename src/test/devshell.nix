@@ -1,0 +1,3 @@
+{mkShell, ...}:
+mkShell {
+}
