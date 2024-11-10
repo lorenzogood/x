@@ -1,8 +1,12 @@
 package startup
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/lorenzogood/x/internal/flagenv"
 	"go.uber.org/zap"
@@ -10,7 +14,7 @@ import (
 
 var logLevel = zap.LevelFlag("log-level", zap.InfoLevel, "zap log level.")
 
-func Run(envPrefix string) {
+func Run(envPrefix string) (context.Context, context.CancelFunc) {
 	if envPrefix != "" {
 		flagenv.Prefix = envPrefix + "_"
 	}
@@ -32,4 +36,8 @@ func Run(envPrefix string) {
 	}
 
 	zap.ReplaceGlobals(l)
+
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+
+	return ctx, cancel
 }
