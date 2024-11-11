@@ -3,6 +3,7 @@ package router
 import (
 	"net/http"
 
+	"github.com/lorenzogood/x/internal/templates"
 	"go.uber.org/zap"
 )
 
@@ -32,6 +33,27 @@ func (c *Ctx) SetStatus(s HttpStatusCode) {
 	c.Response().WriteHeader(int(s))
 }
 
+func (c *Ctx) Header() http.Header {
+	return c.w.Header()
+}
+
 func (c *Ctx) StatusCode() HttpStatusCode {
 	return c.statusCode
+}
+
+func (c *Ctx) Respond(status HttpStatusCode, b []byte) error {
+	c.SetStatus(status)
+	_, err := c.Response().Write(b)
+	return err
+}
+
+func (c *Ctx) RespondString(status HttpStatusCode, b string) error {
+	return c.Respond(status, []byte(b))
+}
+
+func (c *Ctx) RespondTemplate(t *templates.TemplateRenderer, status HttpStatusCode, name string, data any) error {
+	c.SetStatus(status)
+	c.Header().Set("Content-Type", "text/html")
+
+	return t.Render(name, data, c.w)
 }
