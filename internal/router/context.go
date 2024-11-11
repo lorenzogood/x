@@ -1,6 +1,7 @@
 package router
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/lorenzogood/x/internal/templates"
@@ -56,6 +57,17 @@ func (c *Ctx) RespondTemplate(t *templates.TemplateRenderer, status HttpStatusCo
 	c.Header().Set("Content-Type", "text/html")
 
 	return t.Render(name, data, c.w)
+}
+
+func (c *Ctx) RespondJson(status HttpStatusCode, data any) error {
+	c.SetStatus(status)
+	c.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewEncoder(c.w).Encode(data); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Ctx) Method() RouteMethod {

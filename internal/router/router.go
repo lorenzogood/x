@@ -18,6 +18,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if err := h(ctx); err != nil {
 		ctx.Log().Error("handler error", zap.Error(err))
+		ctx.SetStatus(InternalServerError)
 	}
 }
 
