@@ -57,3 +57,7 @@ func (c *Ctx) RespondTemplate(t *templates.TemplateRenderer, status HttpStatusCo
 
 	return t.Render(name, data, c.w)
 }
+
+func (c *Ctx) Method() RouteMethod {
+	return RouteMethod(c.r.Method)
+}
