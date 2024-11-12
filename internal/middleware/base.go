@@ -19,6 +19,7 @@ func LogRecover(h router.Handler) router.Handler {
 					zap.Duration("duration", time.Since(start)*time.Millisecond),
 					zap.String("path", c.Request().Pattern),
 					zap.Any("panic", err),
+					zap.String("user_agent", c.Request().Header.Get("User-Agent")),
 				)
 			} else {
 				mills := time.Since(start) / time.Millisecond
@@ -37,6 +38,7 @@ func LogRecover(h router.Handler) router.Handler {
 					zap.Duration("duration", time.Since(start)*time.Millisecond),
 					zap.String("method", string(c.Method())),
 					zap.String("path", c.Request().Pattern),
+					zap.String("user_agent", c.Request().Header.Get("User-Agent")),
 				)
 			}
 		}()
